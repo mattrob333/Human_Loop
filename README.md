@@ -22,33 +22,37 @@ A modern web application for team personality assessments and analytics, built w
 ## Getting Started
 
 1. Clone the repository
+   ```bash
+   git clone https://github.com/mattrob333/Human_Loop.git
+   cd Human_Loop
+   ```
+
 2. Install dependencies:
    ```bash
    cd project
    npm install
    ```
+
 3. Set up environment variables:
-   Create a `.env.local` file with your Supabase credentials:
+   Create a `.env.local` file with:
    ```
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   OPENAI_API_KEY=your_openai_api_key
    ```
+
 4. Run the development server:
    ```bash
    npm run dev
    ```
 
-## Database Setup
+## Deployment
 
-1. Create a new Supabase project
-2. Run the SQL migrations in `supabase/migrations`
-3. Apply the schema from `supabase/schema.sql`
+This project is configured for deployment on Vercel:
 
-## Contributing
-
-1. Create a feature branch
-2. Make your changes
-3. Submit a pull request
+1. Push your changes to the main branch
+2. Vercel will automatically deploy from the `project` directory
+3. Ensure all environment variables are set in your Vercel project settings
 
 ## License
 
