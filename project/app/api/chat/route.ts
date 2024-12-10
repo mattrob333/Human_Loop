@@ -1,4 +1,5 @@
-import { OpenAIStream, StreamingTextResponse } from 'ai';
+import { OpenAIStream as createStream } from 'ai';
+import { StreamingTextResponse } from 'ai';
 import OpenAI from 'openai';
 import { NextResponse } from 'next/server';
 
@@ -18,10 +19,13 @@ export async function POST(req: Request) {
       messages: messages,
     });
 
-    const stream = OpenAIStream(response);
+    // Convert the response into a friendly text-stream
+    const stream = createStream(response);
+
+    // Return a StreamingTextResponse, which can be consumed by the client
     return new StreamingTextResponse(stream);
   } catch (error) {
     console.error('Error in chat route:', error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
