@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils"
 import { useEffect, useState } from 'react'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { Database } from '@/lib/database.types'
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 
 interface BentoCardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
@@ -41,6 +43,7 @@ function BentoCard({ title, description, icon, className, children, ...props }: 
 export default function EnhancedDashboard() {
   const [userName, setUserName] = useState<string>('')
   const [userProfile, setUserProfile] = useState<any>(null)
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const supabase = createClientComponentClient<Database>()
 
   useEffect(() => {
@@ -52,9 +55,18 @@ export default function EnhancedDashboard() {
           .select('*')
           .eq('id', user.id)
           .single()
-        
-        setUserName(profile?.full_name || user.email?.split('@')[0] || 'User')
-        setUserProfile(profile)
+
+        if (profile) {
+          setUserName(profile.full_name || user.email?.split('@')[0] || '')
+          setUserProfile(profile)
+          if (profile.avatar_url) {
+            const { data: { publicUrl } } = supabase
+              .storage
+              .from('avatars')
+              .getPublicUrl(profile.avatar_url)
+            setAvatarUrl(publicUrl)
+          }
+        }
       }
     }
     loadUserProfile()
@@ -150,18 +162,28 @@ export default function EnhancedDashboard() {
   ]
 
   return (
-    <div className="relative min-h-screen w-full bg-black p-4 md:p-8">
-      {/* Dot pattern background */}
-      <div 
-        className="absolute inset-0 z-0"
-        style={{
-          backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(39 39 42 / 0.2) 1px, transparent 0)',
-          backgroundSize: '32px 32px'
-        }}
-      />
-      
-      {/* Content */}
-      <div className="relative z-10 mx-auto max-w-7xl">
+    <div className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={avatarUrl || ''} alt={userName} />
+            <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold">Welcome back, {userName}</h1>
+            {userProfile?.rubric ? (
+              <p className="text-sm font-mono text-zinc-400">{userProfile.rubric}</p>
+            ) : (
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => window.location.href = '/assessment'}
+              >
+                Take Assessment
+              </Button>
+            )}
+          </div>
+        </div>
         <div className="grid gap-4 md:grid-cols-4">
           {cards.map((card, i) => (
             <BentoCard

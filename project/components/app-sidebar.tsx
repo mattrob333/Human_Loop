@@ -15,10 +15,12 @@ import {
   Menu,
   User,
   LogOut,
+  Network,
 } from 'lucide-react';
 
 const menuItems = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/dashboard' },
+  { icon: Network, label: 'Org Chart', href: '/org-chart' },
   { icon: ClipboardCheck, label: 'Assessment', href: '/assessment' },
   { icon: BarChart2, label: 'Team Analytics', href: '/analytics' },
   { icon: Settings, label: 'Settings', href: '/settings' },
